@@ -2,6 +2,91 @@
 <html>
 <head>
 <title>...This Is Jesse...</title>
+<style>
+	body {
+		background-color: powderblue;
+		font-family: Arial;
+		color: black;
+		text-align: center;
+}
+	header {
+		background-color: tomato;
+		color: white;
+		text-align: center;
+		padding: 20px;
+}
+	h1 {
+		color: navy;
+		font-size: 36px;
+}
+	p {
+		font-size: 18px;
+}
+	img {
+		width: 200px;
+		height: 125p;
+		border-radius: 50%;
+		border: 3px solid green;
+		margin-top: 10px;
+}
+	.table-style1 {
+		width: 80%;
+		margin: 20px auto;
+		border: 2px solid navy;
+}
+	.table-style1 th, .table-style1 td {
+		border: 1px solid navy;
+		padding: 10px;
+		text-align: center;
+}
+	.table-style1 th {
+		background-color: lightblue;
+}
+	.table-style2 {
+		width: 60%;
+		margin: 20px auto;
+		border-collapse: collapse;
+		border: 2px solid darkgreen;
+}
+	.table-style2 th, .table-style2 td {
+		border: 1px solid darkgreen;
+		padding: 10px;
+		text-align: center;
+}
+	.table-style2 th {
+		background-color: lightgreen;
+}
+	.about {
+		width: 60%;
+		margin: 20px auto;
+		text-align: left;
+}
+	div.mycontainer {
+		width:66%;
+		overflow:auto;
+}
+	div.mycontainer div {
+		width:50%;
+		float:left;
+}
+	.video {
+		width: 40%;
+		margin: 10px auto;
+		text-align: center;
+		border: 3px solid green;
+}
+	.list-style1 {
+		list-style-type: square;
+		color: darkblue;
+		margin:20px;
+}
+	.list-style2 {
+		list-style-type: circle;
+		color: darkgreen;
+		text-aligh: left;
+		margin:20px;
+}
+</style>
 </head>
 <body>
 <header>
@@ -12,16 +97,16 @@ Name: Jesse Baldwin
 Age: 44
 Location: Kansas City</pre>   
 </header>
-<section>
+<section class="about">
 <p>Check out my favorite website: <a href="http://www.google.com/" target="_blank">Google</a>
 </p>
 <a href="mailto:jessebaldwin1981@gmail.com">Send me an email</a>
 <a href="https://www.facebook.com/jesse.baldwin.567987" target="_blank">
-<img src="https://github.com/jessebaldwin1981/jessebaldwin/blob/main/jessebaldwin.jpg?raw=true" alt="jb"max-width="100%"height="auto"></a>
+<img src="https://github.com/jessebaldwin1981/jessebaldwin/blob/main/jessebaldwin.jpg?raw=true" alt="jb"title = "Click to surf the Interwebs!"max-width="100%"height="auto"></a>
 </section>
 <hr>
 <h2>MY Hobbies</h2>
-<table>
+<table class="table-style1">
 <tr>
 <th>Hobby</th>
 <th>Hours/Week</th>
@@ -32,7 +117,7 @@ Location: Kansas City</pre>
 </tr>
 </table>
 <h2>My Favorite Movies</h2>
-<table>
+<table class="table-style2">
 <tr>
 <td>The Hitchiker's Guide To The Galaxy</td>
 <td>4-29-2005</td>
@@ -42,19 +127,25 @@ Location: Kansas City</pre>
 <td>2-8-1976</td>
 </tr>
 </table>
+<div class = "mycontainer">
+<div>
 <h2>My Favorite Foods</h2>
-<ul>
+<ul class="list-style1">
 <li>Hamburgers</li>
 <li>Pizza</li>
 <li>Anything that used to have eyelashes</li>
 </ul>
+</div>
+<div>
 <h2>My Favorite Drinks</h2>
-<ul>
+<ul class="list-style2">
 <li>Milk</li>
 <li>Horchata</li>
 <li>Chocolate Coke</li>
 </ul>
-<section>
+</div>
+</div>
+<section class = "video">
 <h2>My New Favorite Video</h2>
 <video width="500" height="261" controls>
 <source src=https://github.com/jessebaldwin1981/jessebaldwin/blob/main/WIN_20250520_11_41_05_Pro.mp4?raw=True">
@@ -62,7 +153,6 @@ Your browser does nbot support the video tag.
 </video>
 </section>
 <h2>Embedded Website</h2>
-<iframe src="http://www.npr.org" width="600" height="400" style="border: none;">
-</iframe>
+<iframe src="http://www.npr.org" width="600" height="400" style="border: none;"></iframe>
 </body>
 </html>
