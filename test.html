@@ -1,13 +1,216 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <style>
-    body {
-      background-image: linear-gradient(to bottom, DarkOrchid 0%, DarkOrchid 25%, FireBrick 50%, White 75%, white 100%); min-height: 100vh;
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Builder</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.s不高</link>
+  <style>
+    #resume-preview { 
+      border: 1px solid #ccc; 
+      padding: 20px; 
+      background: white; 
     }
-    </style>
-  </head>
-  <body>
-  <p>This is a new page.</p>
-  </body>
+    @media print {
+      #resume-preview { 
+        border: none; 
+        width: 210mm; 
+        height: 297mm; 
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    const { jsPDF } = window.jspdf;
+
+    const ResumeBuilder = () => {
+      const [template, setTemplate] = useState('modern');
+      const [bgColor, setBgColor] = useState('#ffffff');
+      const [sectionColor, setSectionColor] = useState('#f0f0f0');
+      const [photo, setPhoto] = useState(null);
+      const [sections, setSections] = useState([
+        { id: 1, title: 'Education', content: [''] },
+        { id: 2, title: 'Experience', content: [''] },
+      ]);
+
+      useEffect(() => {
+        const quills = document.querySelectorAll('.quill-editor');
+        quills.forEach((editor, index) => {
+          const quill = new Quill(editor, {
+            theme: 'snow',
+            modules: { toolbar: [['bullet']] },
+          });
+          quill.on('text-change', () => {
+            const newSections = [...sections];
+            newSections[index].content = quill.getContents().ops.map(op => op.insert);
+            setSections(newSections);
+          });
+        });
+      }, [sections]);
+
+      const addSection = () => {
+        setSections([...sections, { id: sections.length + 1, title: `Section ${sections.length + 1}`, content: [''] }]);
+      };
+
+      const removeSection = (id) => {
+        setSections(sections.filter(section => section.id !== id));
+      };
+
+      const handlePhotoUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => setPhoto(e.target.result);
+          reader.readAsDataURL(file);
+        }
+      };
+
+      const generatePDF = () => {
+        const doc = new jsPDF();
+        doc.setFontSize(12);
+        let y = 20;
+        if (photo) {
+          doc.addImage(photo, 'JPEG', 10, y, 50, 50);
+          y += 60;
+        }
+        sections.forEach(section => {
+          doc.setFillColor(sectionColor);
+          doc.rect(10, y, 190, 10, 'F');
+          doc.text(section.title, 15, y + 8);
+          y += 15;
+          section.content.forEach(line => {
+            if (line.trim()) {
+              doc.text(`• ${line}`, 20, y);
+              y += 10;
+            }
+          });
+          y += 10;
+        });
+        doc.save('resume.pdf');
+      };
+
+      return (
+        <div className="container mx-auto p-4 flex">
+          <div className="w-1/2 p-4">
+            <h1 className="text-2xl mb-4">Resume Builder</h1>
+            <div className="mb-4">
+              <label className="block">Template:</label>
+              <select 
+                className="border p-2 w-full" 
+                value={template} 
+                onChange={(e) => setTemplate(e.target.value)}
+              >
+                <option value="modern">Modern</option>
+                <option value="classic">Classic</option>
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="block">Background Color:</label>
+              <input 
+                type="color" 
+                value={bgColor} 
+                onChange={(e) => setBgColor(e.target.value)} 
+                className="w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block">Section Color:</label>
+              <input 
+                type="color" 
+                value={sectionColor} 
+                onChange={(e) => setSectionColor(e.target.value)} 
+                className="w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block">Upload Photo:</label>
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={handlePhotoUpload} 
+                className="w-full"
+              />
+            </div>
+            {sections.map((section, index) => (
+              <div key={section.id} className="mb-4">
+                <input 
+                  type="text" 
+                  value={section.title} 
+                  onChange={(e) => {
+                    const newSections = [...sections];
+                    newSections[index].title = e.target.value;
+                    setSections(newSections);
+                  }} 
+                  className="border p-2 w-full mb-2"
+                />
+                <div className="quill-editor" style={{ height: '100px' }}></div>
+                <button 
+                  className="bg-red-500 text-white p-2 mt-2" 
+                  onClick={() => removeSection(section.id)}
+                >
+                  Remove Section
+                </button>
+              </div>
+            ))}
+            <button 
+              className="bg-blue-500 text-white p-2" 
+              onClick={addSection}
+            >
+              Add Section
+            </button>
+            <div className="mt-4">
+              <button 
+                className="bg-green-500 text-white p-2 mr-2" 
+                onClick={() => window.print()}
+              >
+                Print Resume
+              </button>
+              <button 
+                className="bg-purple-500 text-white p-2" 
+                onClick={generatePDF}
+              >
+                Download PDF
+              </button>
+            </div>
+          </div>
+          <div 
+            id="resume-preview" 
+            className="w-1/2 p-4" 
+            style={{ backgroundColor: bgColor }}
+          >
+            {photo && (
+              <img src={photo} alt="Profile" className="w-32 h-32 mb-4" />
+            )}
+            {sections.map(section => (
+              <div key={section.id}>
+                <div 
+                  className="p-2 mb-2" 
+                  style={{ backgroundColor: sectionColor }}
+                >
+                  <h2 className="text-lg font-bold">{section.title}</h2>
+                </div>
+                <ul className="list-disc pl-5">
+                  {section.content.map((line, i) => (
+                    line.trim() && <li key={i}>{line}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<ResumeBuilder />, document.getElementById('root'));
+  </script>
+</body>
 </html>
