@@ -3,214 +3,334 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resume Builder</title>
-  <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7/babel.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2/dist/jspdf.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.s不高</link>
+  <title>Your Name - Resume</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
-    #resume-preview { 
-      border: 1px solid #ccc; 
-      padding: 20px; 
-      background: white; 
+    /* Smooth scrolling for anchor links */
+    html {
+      scroll-behavior: smooth;
     }
-    @media print {
-      #resume-preview { 
-        border: none; 
-        width: 210mm; 
-        height: 297mm; 
-      }
+    /* Styling for editable areas */
+    [contenteditable="true"] {
+      outline: 2px dashed transparent;
+      transition: outline 0.2s;
+    }
+    [contenteditable="true"]:hover {
+      outline: 2px dashed #3b82f6;
+    }
+    [contenteditable="true"]:focus {
+      outline: 2px solid #3b82f6;
+      background-color: #f0f9ff;
     }
   </style>
 </head>
-<body>
-  <div id="root"></div>
-  <script type="text/babel">
-    const { useState, useEffect } = React;
-    const { jsPDF } = window.jspdf;
+<body class="bg-gray-100 font-sans">
+  <!-- Navigation -->
+  <nav class="bg-blue-900 text-white p-4 fixed w-full top-0 z-10">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-xl font-bold" contenteditable="true" id="nav-name">Your Name</h1>
+      <ul class="flex space-x-6">
+        <li><a href="#about" class="hover:text-blue-300">About</a></li>
+        <li><a href="#education" class="hover:text-blue-300">Education</a></li>
+        <li><a href="#experience" class="hover:text-blue-300">Experience</a></li>
+        <li><a href="#skills" class="hover:text-blue-300">Skills</a></li>
+        <li><a href="#contact" class="hover:text-blue-300">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
 
-    const ResumeBuilder = () => {
-      const [template, setTemplate] = useState('modern');
-      const [bgColor, setBgColor] = useState('#ffffff');
-      const [sectionColor, setSectionColor] = useState('#f0f0f0');
-      const [photo, setPhoto] = useState(null);
-      const [sections, setSections] = useState([
-        { id: 1, title: 'Education', content: [''] },
-        { id: 2, title: 'Experience', content: [''] },
-      ]);
+  <!-- Hero Section -->
+  <section class="bg-blue-800 text-white text-center py-20 mt-16">
+    <div class="container mx-auto">
+      <h1 class="text-4xl font-bold mb-2" contenteditable="true" id="hero-name">Your Name</h1>
+      <p class="text-xl" contenteditable="true" id="hero-title">Software Engineer | Data Scientist | Problem Solver</p>
+      <button id="downloadDocxBtn" class="mt-6 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+        Download as DOCX
+      </button>
+      <button id="downloadImageBtn" class="mt-6 ml-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+        Download as Image
+      </button>
+      <button id="saveBtn" class="mt-6 ml-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded">
+        Save Changes
+      </button>
+    </div>
+  </section>
 
-      useEffect(() => {
-        const quills = document.querySelectorAll('.quill-editor');
-        quills.forEach((editor, index) => {
-          const quill = new Quill(editor, {
-            theme: 'snow',
-            modules: { toolbar: [['bullet']] },
-          });
-          quill.on('text-change', () => {
-            const newSections = [...sections];
-            newSections[index].content = quill.getContents().ops.map(op => op.insert);
-            setSections(newSections);
-          });
-        });
-      }, [sections]);
+  <!-- About Section -->
+  <section id="about" class="py-16">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-6 text-center">About Me</h2>
+      <p class="text-lg text-gray-700" contenteditable="true" id="about-text">
+        I am a passionate software engineer with a strong background in web development and data analysis. I specialize in building responsive, user-friendly applications and have a keen interest in solving complex problems through code.
+      </p>
+    </div>
+  </section>
 
-      const addSection = () => {
-        setSections([...sections, { id: sections.length + 1, title: `Section ${sections.length + 1}`, content: [''] }]);
-      };
-
-      const removeSection = (id) => {
-        setSections(sections.filter(section => section.id !== id));
-      };
-
-      const handlePhotoUpload = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (e) => setPhoto(e.target.result);
-          reader.readAsDataURL(file);
-        }
-      };
-
-      const generatePDF = () => {
-        const doc = new jsPDF();
-        doc.setFontSize(12);
-        let y = 20;
-        if (photo) {
-          doc.addImage(photo, 'JPEG', 10, y, 50, 50);
-          y += 60;
-        }
-        sections.forEach(section => {
-          doc.setFillColor(sectionColor);
-          doc.rect(10, y, 190, 10, 'F');
-          doc.text(section.title, 15, y + 8);
-          y += 15;
-          section.content.forEach(line => {
-            if (line.trim()) {
-              doc.text(`• ${line}`, 20, y);
-              y += 10;
-            }
-          });
-          y += 10;
-        });
-        doc.save('resume.pdf');
-      };
-
-      return (
-        <div className="container mx-auto p-4 flex">
-          <div className="w-1/2 p-4">
-            <h1 className="text-2xl mb-4">Resume Builder</h1>
-            <div className="mb-4">
-              <label className="block">Template:</label>
-              <select 
-                className="border p-2 w-full" 
-                value={template} 
-                onChange={(e) => setTemplate(e.target.value)}
-              >
-                <option value="modern">Modern</option>
-                <option value="classic">Classic</option>
-              </select>
-            </div>
-            <div className="mb-4">
-              <label className="block">Background Color:</label>
-              <input 
-                type="color" 
-                value={bgColor} 
-                onChange={(e) => setBgColor(e.target.value)} 
-                className="w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block">Section Color:</label>
-              <input 
-                type="color" 
-                value={sectionColor} 
-                onChange={(e) => setSectionColor(e.target.value)} 
-                className="w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block">Upload Photo:</label>
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={handlePhotoUpload} 
-                className="w-full"
-              />
-            </div>
-            {sections.map((section, index) => (
-              <div key={section.id} className="mb-4">
-                <input 
-                  type="text" 
-                  value={section.title} 
-                  onChange={(e) => {
-                    const newSections = [...sections];
-                    newSections[index].title = e.target.value;
-                    setSections(newSections);
-                  }} 
-                  className="border p-2 w-full mb-2"
-                />
-                <div className="quill-editor" style={{ height: '100px' }}></div>
-                <button 
-                  className="bg-red-500 text-white p-2 mt-2" 
-                  onClick={() => removeSection(section.id)}
-                >
-                  Remove Section
-                </button>
-              </div>
-            ))}
-            <button 
-              className="bg-blue-500 text-white p-2" 
-              onClick={addSection}
-            >
-              Add Section
-            </button>
-            <div className="mt-4">
-              <button 
-                className="bg-green-500 text-white p-2 mr-2" 
-                onClick={() => window.print()}
-              >
-                Print Resume
-              </button>
-              <button 
-                className="bg-purple-500 text-white p-2" 
-                onClick={generatePDF}
-              >
-                Download PDF
-              </button>
-            </div>
-          </div>
-          <div 
-            id="resume-preview" 
-            className="w-1/2 p-4" 
-            style={{ backgroundColor: bgColor }}
-          >
-            {photo && (
-              <img src={photo} alt="Profile" className="w-32 h-32 mb-4" />
-            )}
-            {sections.map(section => (
-              <div key={section.id}>
-                <div 
-                  className="p-2 mb-2" 
-                  style={{ backgroundColor: sectionColor }}
-                >
-                  <h2 className="text-lg font-bold">{section.title}</h2>
-                </div>
-                <ul className="list-disc pl-5">
-                  {section.content.map((line, i) => (
-                    line.trim() && <li key={i}>{line}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+  <!-- Education Section -->
+  <section id="education" class="bg-gray-200 py-16">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-6 text-center">Education</h2>
+      <div id="education-list">
+        <div class="mb-6" id="edu-entry-1">
+          <h3 class="text-xl font-semibold" contenteditable="true" id="edu-title-1">Bachelor of Science in Computer Science</h3>
+          <p class="text-gray-600" contenteditable="true" id="edu-details-1">University Name, City, State | 2018 - 2022</p>
+          <p class="text-gray-700" contenteditable="true" id="edu-extra-1">GPA: 3.8/4.0 | Relevant Coursework: Data Structures, Algorithms, Web Development</p>
         </div>
-      );
-    };
+      </div>
+      <div class="flex space-x-4 mt-4">
+        <button id="add-education" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">+ Add Education</button>
+        <button id="remove-education" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded">- Remove Education</button>
+      </div>
+    </div>
+  </section>
 
-    ReactDOM.render(<ResumeBuilder />, document.getElementById('root'));
+  <!-- Experience Section -->
+  <section id="experience" class="py-16">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-6 text-center">Work Experience</h2>
+      <div id="experience-list">
+        <div class="mb-6" id="exp-entry-1">
+          <h3 class="text-xl font-semibold" contenteditable="true" id="exp-title-1">Software Engineer Intern</h3>
+          <p class="text-gray-600" contenteditable="true" id="exp-details-1">Tech Company, Remote | June 2021 - August 2021</p>
+          <ul class="list-disc list-inside text-gray-700">
+            <li contenteditable="true" id="exp-item-1-1">Developed and maintained web applications using React and Node.js.</li>
+            <li contenteditable="true" id="exp-item-1-2">Collaborated with a team of 5 to implement new features for a client-facing product.</li>
+            <li contenteditable="true" id="exp-item-1-3">Improved application performance by optimizing database queries.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="flex space-x-4 mt-4">
+        <button id="add-experience" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">+ Add Experience</button>
+        <button id="remove-experience" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded">- Remove Experience</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section id="skills" class="bg-gray-200 py-16">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-6 text-center">Skills</h2>
+      <ul class="grid grid-cols-2 md:grid-cols-3 gap-4 text-gray-700" id="skills-list">
+        <li class="bg-white p-3 rounded shadow" contenteditable="true" id="skill-1">JavaScript</li>
+        <li class="bg-white p-3 rounded shadow" contenteditable="true" id="skill-2">Python</li>
+        <li class="bg-white p-3 rounded shadow" contenteditable="true" id="skill-3">React</li>
+        <li class="bg-white p-3 rounded shadow" contenteditable="true" id="skill-4">Node.js</li>
+        <li class="bg-white p-3 rounded shadow" contenteditable="true" id="skill-5">SQL</li>
+        <li class="bg-white p-3 rounded shadow" contenteditable="true" id="skill-6">Git</li>
+      </ul>
+      <div class="flex space-x-4 mt-4">
+        <button id="add-skill" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">+ Add Skill</button>
+        <button id="remove-skill" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded">- Remove Skill</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-16">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-6 text-center">Contact Me</h2>
+      <p class="text-lg text-gray-700 text-center mb-6" contenteditable="true" id="contact-info">
+        Email: your.email@example.com | Phone: (123) 456-7890 | LinkedIn: linkedin.com/in/yourname
+      </p>
+      <div class="max-w-md mx-auto">
+        <input type="text" placeholder="Name" class="w-full p-2 mb-4 border rounded">
+        <input type="email" placeholder="Email" class="w-full p-2 mb-4 border rounded">
+        <textarea placeholder="Message" class="w-full p-2 mb-4 border rounded h-32"></textarea>
+        <button class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded">Send Message</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-blue-900 text-white text-center py-4">
+    <p contenteditable="true" id="footer-text">© 2025 Your Name. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Smooth scroll for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    // Save and load editable content
+    const editableElements = () => document.querySelectorAll('[contenteditable="true"]');
+    const saveBtn = document.getElementById('saveBtn');
+    let eduCounter = 1; // Track education entries
+    let expCounter = 1; // Track experience entries
+    let skillCounter = 6; // Track skills (starting after initial 6)
+
+    // Load saved content from localStorage
+    function loadContent() {
+      editableElements().forEach(el => {
+        const savedContent = localStorage.getItem(el.id);
+        if (savedContent) {
+          el.innerText = savedContent;
+        }
+      });
+    }
+    loadContent();
+
+    // Save content to localStorage
+    saveBtn.addEventListener('click', () => {
+      editableElements().forEach(el => {
+        localStorage.setItem(el.id, el.innerText);
+      });
+      alert('Changes saved successfully!');
+    });
+
+    // Add new education entry
+    document.getElementById('add-education').addEventListener('click', () => {
+      eduCounter++;
+      const newEdu = document.createElement('div');
+      newEdu.className = 'mb-6';
+      newEdu.id = `edu-entry-${eduCounter}`;
+      newEdu.innerHTML = `
+        <h3 class="text-xl font-semibold" contenteditable="true" id="edu-title-${eduCounter}">New Degree</h3>
+        <p class="text-gray-600" contenteditable="true" id="edu-details-${eduCounter}">Institution Name, Location | Date Range</p>
+        <p class="text-gray-700" contenteditable="true" id="edu-extra-${eduCounter}">Additional Details</p>
+      `;
+      document.getElementById('education-list').appendChild(newEdu);
+    });
+
+    // Remove last education entry
+    document.getElementById('remove-education').addEventListener('click', () => {
+      const eduList = document.getElementById('education-list');
+      if (eduList.children.length > 1) {
+        const lastEdu = eduList.lastElementChild;
+        const ids = [
+          lastEdu.querySelector('h3').id,
+          lastEdu.querySelectorAll('p')[0].id,
+          lastEdu.querySelectorAll('p')[1].id
+        ];
+        ids.forEach(id => localStorage.removeItem(id));
+        lastEdu.remove();
+        eduCounter = Math.max(1, eduCounter - 1);
+      } else {
+        alert('Cannot remove the last education entry.');
+      }
+    });
+
+    // Add new experience entry
+    document.getElementById('add-experience').addEventListener('click', () => {
+      expCounter++;
+      const newExp = document.createElement('div');
+      newExp.className = 'mb-6';
+      newExp.id = `exp-entry-${expCounter}`;
+      newExp.innerHTML = `
+        <h3 class="text-xl font-semibold" contenteditable="true" id="exp-title-${expCounter}">New Position</h3>
+        <p class="text-gray-600" contenteditable="true" id="exp-details-${expCounter}">Company Name, Location | Date Range</p>
+        <ul class="list-disc list-inside text-gray-700">
+          <li contenteditable="true" id="exp-item-${expCounter}-1">New responsibility or achievement.</li>
+        </ul>
+      `;
+      document.getElementById('experience-list').appendChild(newExp);
+    });
+
+    // Remove last experience entry
+    document.getElementById('remove-experience').addEventListener('click', () => {
+      const expList = document.getElementById('experience-list');
+      if (expList.children.length > 1) {
+        const lastExp = expList.lastElementChild;
+        const ids = [
+          lastExp.querySelector('h3').id,
+          lastExp.querySelector('p').id,
+          ...Array.from(lastExp.querySelectorAll('li')).map(li => li.id)
+        ];
+        ids.forEach(id => localStorage.removeItem(id));
+        lastExp.remove();
+        expCounter = Math.max(1, expCounter - 1);
+      } else {
+        alert('Cannot remove the last experience entry.');
+      }
+    });
+
+    // Add new skill
+    document.getElementById('add-skill').addEventListener('click', () => {
+      skillCounter++;
+      const newSkill = document.createElement('li');
+      newSkill.className = 'bg-white p-3 rounded shadow';
+      newSkill.contentEditable = true;
+      newSkill.id = `skill-${skillCounter}`;
+      newSkill.innerText = 'New Skill';
+      document.getElementById('skills-list').appendChild(newSkill);
+    });
+
+    // Remove last skill
+    document.getElementById('remove-skill').addEventListener('click', () => {
+      const skillsList = document.getElementById('skills-list');
+      if (skillsList.children.length > 1) {
+        const lastSkill = skillsList.lastElementChild;
+        localStorage.removeItem(lastSkill.id);
+        lastSkill.remove();
+        skillCounter = Math.max(1, skillCounter - 1);
+      } else {
+        alert('Cannot remove the last skill.');
+      }
+    });
+
+    // Download resume as DOCX
+    document.getElementById('downloadDocxBtn').addEventListener('click', () => {
+      const resumeData = {
+        name: document.getElementById('hero-name').innerText,
+        title: document.getElementById('hero-title').innerText,
+        about: document.getElementById('about-text').innerText,
+        education: Array.from(document.getElementById('education-list').children).map(div => ({
+          title: div.querySelector('h3').innerText,
+          details: div.querySelectorAll('p')[0].innerText,
+          extra: div.querySelectorAll('p')[1].innerText
+        })),
+        experience: Array.from(document.getElementById('experience-list').children).map(div => ({
+          title: div.querySelector('h3').innerText,
+          details: div.querySelector('p').innerText,
+          items: Array.from(div.querySelectorAll('li')).map(li => li.innerText)
+        })),
+        skills: Array.from(document.getElementById('skills-list').children).map(li => li.innerText),
+        contact: document.getElementById('contact-info').innerText
+      };
+
+      fetch('http://localhost:3000/generate-docx', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(resumeData)
+      })
+        .then(response => response.blob())
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'resume.docx';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+          console.error('Error generating DOCX:', error);
+          alert('Failed to generate DOCX. Ensure the backend server is running.');
+        });
+    });
+
+    // Download resume as image
+    document.getElementById('downloadImageBtn').addEventListener('click', () => {
+      html2canvas(document.body).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = imgData;
+        a.download = 'resume.png';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }).catch(error => {
+        console.error('Error generating image:', error);
+        alert('Failed to generate image. Try again or check console for errors.');
+      });
+    });
   </script>
 </body>
 </html>
