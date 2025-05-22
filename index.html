@@ -1,171 +1,265 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>...This Is Jesse...</title>
-<style>
-	body {
-		background-color: powderblue;
-		font-family: Arial;
-		color: black;
-		text-align: center;
-	}
-	header {
-		background-color: tomato;
-		color: white;
-		text-align: center;
-		padding: 20px;
-	}
-	h1 {
-		color: navy;
-		font-size: 36px;
-	}
-	p {
-		font-size: 18px;
-	}
-	img {
-		width: 200px;
-		height: 125px; /* Corrected */
-		border-radius: 50%;
-		border: 3px solid green;
-		margin-top: 10px;
-	}
-	.table-style1 {
-		width: 80%;
-		margin: 20px auto;
-		border: 2px solid navy;
-	}
-	.table-style1 th, .table-style1 td {
-		border: 1px solid navy;
-		padding: 10px;
-		text-align: center;
-	}
-	.table-style1 th {
-		background-color: lightblue;
-	}
-	.table-style2 {
-		width: 60%;
-		margin: 20px auto;
-		border-collapse: collapse;
-		border: 2px solid darkgreen;
-	}
-	.table-style2 th, .table-style2 td {
-		border: 1px solid darkgreen;
-		padding: 10px;
-		text-align: center;
-	}
-	.table-style2 th {
-		background-color: lightgreen;
-	}
-	.about {
-		width: 60%;
-		margin: 20px auto;
-		text-align: left;
-	}
-	div.mycontainer {
-		width:66%;
-		overflow:auto;
-	}
-	div.mycontainer div {
-		width:50%;
-		float:left;
-	}
-	.video {
-		width: 40%;
-		margin: 10px auto;
-		text-align: center;
-		border: 3px solid green;
-	}
-	.list-style1 {
-		list-style-type: square;
-		color: darkblue;
-		margin:20px;
-	}
-	.list-style2 {
-		list-style-type: circle;
-		color: darkgreen;
-		text-align: left; /* Corrected */
-		margin:20px;
-	}
-	.button-transition {
-    		background-color: navy;
-    		color: white;
-    		padding: 10px 20px;
-    		transition: background-color 0.3s ease;
-    		border: none;
-    		cursor: pointer;
-	}
-	.button-transition:hover {
-		background-color: darkorange;
-	}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>...This Is Jesse...</title>
+  <style>
+    body {
+      background-color: powderblue;
+      font-family: Arial, sans-serif;
+      color: black;
+      text-align: center;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    body.dark-mode {
+      background-color: #121212;
+      color: #f0f0f0;
+    }
+
+    header {
+      background-color: tomato;
+      color: white;
+      padding: 20px;
+    }
+
+    header.dark-mode {
+      background-color: #333;
+    }
+
+    h1 {
+      color: navy;
+      font-size: 36px;
+    }
+
+    h1.dark-mode {
+      color: #87cefa;
+    }
+
+    p {
+      font-size: 18px;
+    }
+
+    img.profile-img {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 3px solid green;
+      margin-top: 10px;
+    }
+
+    img.google-img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 3px solid green;
+      display: block;
+      margin: 20px auto;
+    }
+
+    .table-style1, .table-style2 {
+      width: 80%;
+      margin: 20px auto;
+      border-collapse: collapse;
+    }
+
+    .table-style1 {
+      border: 2px solid navy;
+    }
+
+    .table-style1 th, .table-style1 td {
+      border: 1px solid navy;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .table-style1 th {
+      background-color: lightblue;
+    }
+
+    .table-style2 {
+      width: 60%;
+      border: 2px solid darkgreen;
+    }
+
+    .table-style2 th, .table-style2 td {
+      border: 1px solid darkgreen;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .table-style2 th {
+      background-color: lightgreen;
+    }
+
+    .about {
+      width: 60%;
+      margin: 20px auto;
+      text-align: left;
+    }
+
+    .mycontainer {
+      width: 66%;
+      overflow: auto;
+      margin: auto;
+    }
+
+    .mycontainer div {
+      width: 50%;
+      float: left;
+    }
+
+    .video {
+      width: 90%;
+      max-width: 500px;
+      margin: 20px auto;
+      text-align: center;
+      border: 3px solid green;
+    }
+
+    .video video {
+      width: 100%;
+      height: auto;
+    }
+
+    .list-style1 {
+      list-style-type: square;
+      color: darkblue;
+      margin: 20px;
+    }
+
+    .list-style2 {
+      list-style-type: circle;
+      color: darkgreen;
+      text-align: left;
+      margin: 20px;
+    }
+
+    .button-transition {
+      background-color: navy;
+      color: white;
+      padding: 10px 20px;
+      transition: background-color 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .button-transition:hover {
+      background-color: darkorange;
+    }
+
+    .dark-mode .button-transition {
+      background-color: #444;
+    }
+
+    .dark-mode .button-transition:hover {
+      background-color: #ff6600;
+    }
+
+    .dark-toggle {
+      margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .mycontainer div {
+        width: 100%;
+        float: none;
+      }
+    }
+  </style>
 </head>
 <body>
-<header>
-<h1>Welcome...This is the place to know.....Who is Jesse?</h1>
-<p>This is an example of an HTML and CSS personal webpage.</p>
-<pre>
+  <header>
+    <h1>Welcome...This is the place to know.....Who is Jesse?</h1>
+    <p>This is an example of an HTML and CSS personal webpage.</p>
+    <pre>
 Name: Jesse Baldwin
 Age: 44
-Location: Kansas City</pre>
-<a href="test.html" style="color:black;" target="_blank">
-<button class="button-transition">Try My Resume Builder!</button></a>
-</header>
-<section class="about">
-<p>Check out my favorite website: <a href="http://www.google.com/" target="_blank">Google</a></p>
-<a href="mailto:jessebaldwin1981@gmail.com">Send me an email</a>
-<a href="https://www.facebook.com/jesse.baldwin.567987" target="_blank">
-<img src="https://github.com/jessebaldwin1981/jessebaldwin/blob/main/jessebaldwin.jpg?raw=true" alt="jb" title="Click to surf the Interwebs!" style="max-width:100%; height:auto;"></a>
-</section>
-<hr>
-<h2>MY Hobbies</h2>
-<table class="table-style1">
-<tr>
-<th>Hobby</th>
-<th>Hours/Week</th>
-</tr>
-<tr>
-<td>AI Prompt Writing</td>
-<td>10-15</td>
-</tr>
-</table>
-<h2>My Favorite Movies</h2>
-<table class="table-style2">
-<tr>
-<td>The Hitchhiker's Guide To The Galaxy</td>
-<td>4-29-2005</td>
-</tr>
-<tr>
-<td>Taxi Driver</td>
-<td>2-8-1976</td>
-</tr>
-</table>
-<div class="mycontainer">
-<div>
-<h2>My Favorite Foods</h2>
-<ul class="list-style1">
-<li>Hamburgers</li>
-<li>Pizza</li>
-<li>Anything that used to have eyelashes</li>
-</ul>
-</div>
-<div>
-<h2>My Favorite Drinks</h2>
-<ul class="list-style2">
-<li>Milk</li>
-<li>Horchata</li>
-<li>Chocolate Coke</li>
-</ul>
-</div>
-</div>
-<section class="video">
-<h2>My New Favorite Video</h2>
-<video width="500" height="261" controls>
-<source src="https://github.com/jessebaldwin1981/jessebaldwin/blob/main/WIN_20250520_11_41_05_Pro.mp4?raw=True">
-Your browser does not support the video tag.
-</video>
-</section>
-<h2>Embedded Website</h2>
-<iframe height="500" style="width: 100%;" scrolling="yes" title="NPR" src="https://npr.org/" frameborder="no" allowtransparency="true" allowfullscreen="true">
-</iframe>
+Location: Kansas City
+    </pre>
+    <a href="test.html" target="_blank">
+      <button class="button-transition">New Page Link</button>
+    </a>
+    <div class="dark-toggle">
+      <button class="button-transition" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    </div>
+  </header>
+
+  <section class="about">
+    <p>Check out my favorite website: 
+      <a href="http://www.google.com/" target="_blank">Google</a>
+    </p>
+    <address>
+      <a href="mailto:jessebaldwin1981@gmail.com">Send me an email</a>
+    </address>
+    <a href="https://www.facebook.com/jesse.baldwin.567987" target="_blank">
+      <img class="google-img" src="https://github.com/jessebaldwin1981/jessebaldwin/blob/main/jessebaldwin.jpg?raw=true" alt="Photo of Jesse Baldwin" title="Click to surf the Interwebs!">
+    </a>
+  </section>
+
+  <hr>
+
+  <h2>MY Hobbies</h2>
+  <table class="table-style1">
+    <tr>
+      <th>Hobby</th>
+      <th>Hours/Week</th>
+    </tr>
+    <tr>
+      <td>AI Prompt Writing</td>
+      <td>10-15</td>
+    </tr>
+  </table>
+
+  <h2>My Favorite Movies</h2>
+  <table class="table-style2">
+    <tr>
+      <td>The Hitchhiker's Guide To The Galaxy</td>
+      <td>4-29-2005</td>
+    </tr>
+    <tr>
+      <td>Taxi Driver</td>
+      <td>2-8-1976</td>
+    </tr>
+  </table>
+
+  <div class="mycontainer">
+    <div>
+      <h2>My Favorite Foods</h2>
+      <ul class="list-style1">
+        <li>Hamburgers</li>
+        <li>Pizza</li>
+        <li>Anything that used to have eyelashes</li>
+      </ul>
+    </div>
+    <div>
+      <h2>My Favorite Drinks</h2>
+      <ul class="list-style2">
+        <li>Milk</li>
+        <li>Horchata</li>
+        <li>Chocolate Coke</li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="video">
+    <h2>My New Favorite Video</h2>
+    <video controls>
+      <source src="https://github.com/jessebaldwin1981/jessebaldwin/blob/main/WIN_20250520_11_41_05_Pro.mp4?raw=True" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </section>
+
+  <h2>Embedded Website</h2>
+  <iframe height="500" style="width: 100%;" scrolling="yes" title="NPR" src="https://npr.org/" frameborder="no" allowtransparency="true" allowfullscreen="true"></iframe>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+      document.querySelector("header").classList.toggle("dark-mode");
+      document.querySelector("h1").classList.toggle("dark-mode");
+    }
+  </script>
 </body>
 </html>
